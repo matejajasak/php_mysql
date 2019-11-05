@@ -2,7 +2,7 @@
 
 class Session{
 
-    private function __contruct(){}
+    private function __construct(){}
 
     public static function all(){
         return $_SESSION;
@@ -31,7 +31,7 @@ class Session{
             $message = self::get($key);
             self::delete($key);
             return $message;
-        }else {
+        }else{
             self::put($key, $value);
             return '';
         }
