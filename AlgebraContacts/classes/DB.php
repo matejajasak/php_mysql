@@ -1,5 +1,7 @@
 <?php
+
 class DB{
+
     private static $instance = null;
     private $connection;
     private $connection_prepare;
@@ -18,16 +20,17 @@ class DB{
         $pass = $this->config[$driver]['pass'];
         $db = $this->config[$driver]['db'];
         $charset = $this->config[$driver]['charset'];
-        $dsn = "$driver:dbname=$db;host=$host";
+        $dsn = "$driver:dbname=$db;host=$host;charset=$charset";
 
         try {
             $this->connection = new PDO($dsn,$user,$pass);
-            echo "Connected successfully";
+            //echo "Connected successfully";
         } catch (PDOException $e) {
             die($e->getMessage());
         }
         
     }
+
     public static function getInstance(){
         
         if(!self::$instance){
@@ -35,11 +38,14 @@ class DB{
         }
         return self::$instance;
     }
+
     private function action($action, $table, $where = array()){
+
         if ($where) {
             $field = $where[0];
             $operator = $where[1];
             $value = $where[2];
+
             $sql = "$action FROM $table WHERE $field $operator ?";
             if(!$this->query($sql, array($value))->error){
                 return $this;
@@ -53,9 +59,13 @@ class DB{
         }
         return false;
     }
+
     private function query($sql, $params = array()){
+
         $this->error = false;
+
         if($this->connection_prepare = $this->connection->prepare($sql)){
+
             $counter = 1;
             if (!empty($params)) {
                 foreach ($params as $param) {
@@ -73,12 +83,19 @@ class DB{
         }
         return $this;
     }
+
     public function delete($table, $where){
         return $this->action('DELETE', $table, $where);
     }
+
     public function select($fields, $table, $where = array()){
         return $this->action("SELECT $fields", $table, $where);
     }
+
+    public function getById($fields, $table, $id){
+        return $this->query("SELECT $fields FROM $table WHERE id=?", [$id]);
+    }
+
     public function insert($table, $columns){
 
         $keys = array_keys($columns);
@@ -86,22 +103,17 @@ class DB{
         $questionmarks = '';
         $arr_lenght = count($columns);
         $counter = 1;
-        //die($keys);
 
         foreach ($columns as $key => $value) {
-            //$values .= $value.','; //ovdje smo općenito napisali da nam ispiše vrijednosti koje pišu ispod DOMAĆA ZADAĆA
             $questionmarks .= '?';
-            if ($counter < $arr_lenght) {
+            if ($counter < $arr_lenght ) {
                 $questionmarks .= ',';
             }
             $counter++;
         }
-
-
-
         // INSERT INTO users (name,username,password) VALUES (?,?,?);
-        $sql = "INSERT INTO $table ($keys) VALUES ($questionmarks)";
         //DZ - složiti $sql i $values array sa vrijednostima
+        $sql = "INSERT INTO $table ($keys) VALUES ($questionmarks)";
 
         if(!$this->query($sql, $columns)->error){
             return $this;
@@ -114,19 +126,16 @@ class DB{
         $questionmarks = '';
         $arr_lenght = count($fields);
         $counter = 1;
-        //die($keys);
 
         foreach ($fields as $key => $value) {
             $questionmarks .= "$key=?";
-            if ($counter < $arr_lenght) {
+            if ($counter < $arr_lenght ) {
                 $questionmarks .= ',';
             }
             $counter++;
         }
-        //die($questionmarks);
 
         $sql = "UPDATE $table SET $questionmarks WHERE id=$id";
- 
 
         if(!$this->query($sql, $fields)->error){
             return $this;
@@ -134,8 +143,6 @@ class DB{
         return false;
     }
 
-
-    /* GETTERI */
     public function error(){
         return $this->error;
     }
@@ -149,48 +156,3 @@ class DB{
         return $this->results[0];
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-$db = DB::getInstance();
-//$result = $db->delete('users', ['id', '=', 1]);
-//$result = $db->select('name', 'users', ['id', '=', 3]);
-//$result = $db->select('*', 'users');
-//var_dump($result);
-*/
-  
- //DOMAĆA ZADAĆA
- /*
-$result = $db->insert('users', [
-    'username'  => 'Ivan',
-    'password'  => 'pass',
-    'salt'      => 'asdfasdasdasdsadas',
-    'name'      => 'Aleksandar',
-    'role_id'   => 1
-]);
-*/
-
- /*
-$result = $db->update('users', 3, [
-    'username'  => 'alex2',
-    'password'  => 'paskkjhhs',
-    'salt'      => 'iujhn',
-    'name'      => 'Aleks',
-    'role_id'   => 2
-]);
-
-*/

@@ -6,14 +6,16 @@ class Helper{
     private function __clone(){}
 
     public static function getHeader($title = 'Algebra Contacts', $path = 'header-navbar'){
-       $header = require_once "includes/layout/$path.php";
+        
+        $header = require_once "includes/layout/$path.php";
 
-       return $header;
+        return $header;
     }
 
     public static function getFooter($path = 'footer'){
+
         $footer = require_once "includes/layout/$path.php";
 
         return $footer;
-    }
+    }    
 }
