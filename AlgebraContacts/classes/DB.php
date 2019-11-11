@@ -60,7 +60,7 @@ class DB{
         return false;
     }
 
-    private function query($sql, $params = array()){
+    public function query($sql, $params = array()){
 
         $this->error = false;
 

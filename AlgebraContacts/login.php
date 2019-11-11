@@ -10,6 +10,7 @@ $validation = new Validation();
 $user = new User();
 
 if (Input::exists()) {
+    if (Token::factory()->check(Input::get('token'))) {
 
     $validate = $validation->check([
         'username'  => [
@@ -34,6 +35,7 @@ if (Input::exists()) {
        }
     }
 }
+}
 include_once 'notifications.php';
 /*
         Session::flash('success', 'You registred successfully');
@@ -48,7 +50,7 @@ include_once 'notifications.php';
         <h5 class="card-title pt-3">Log in</h5>
         <div class="card-body">
             <form method="POST">
-
+                <input type="hidden" name="token" value="<?php echo Token::factory()->generate() ?>">
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username">

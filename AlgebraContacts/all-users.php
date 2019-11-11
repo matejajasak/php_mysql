@@ -4,7 +4,7 @@ require_once 'core/init.php';
 
 Helper::getHeader();
 
-$users = DB::getInstance()->select('*', 'users')->results();
+$users = DB::getInstance()->query('SELECT u.id, u.name, u.username, u.joined, r.name AS rola FROM users u JOIN roles r ON r.id = u.role_id')->results();
 
 include_once 'notifications.php';
 
@@ -29,12 +29,13 @@ include_once 'notifications.php';
                 <tbody>
                 <?php
                 foreach ($users as $key => $user) {
+                    //$rola = DB::getInstance()->select('name', 'roles', ['id', '=', $user->role_id])->first();
                     echo
                         "<tr>
                             <td>$user->id</td>
                             <td>$user->name</td>
                             <td>$user->username</td>
-                            <td>$user->role_id</td>
+                            <td>$user->rola</td>
                             <td>$user->joined</td>
                             <td>
                                 <a href='show-user.php?id=$user->id' class='btn btn-sm btn-primary'>Prikaži</a>

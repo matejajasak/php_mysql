@@ -11,7 +11,10 @@ Helper::getHeader();
 
 $validation = new Validation();
 
+
 if (Input::exists()) {
+    if (Token::factory()->check(Input::get('token'))) {
+   
 
     $validate = $validation->check([
         'name'      => [
@@ -35,7 +38,7 @@ if (Input::exists()) {
             'matches'   => 'password'
         ]
     ]);
-
+}
     if($validate->passed()){
 
         $salt = Hash::salt();
@@ -71,7 +74,7 @@ if (Input::exists()) {
         <h5 class="card-title pt-3">Create an account</h5>
         <div class="card-body">
             <form method="POST">
-
+                <input type="hidden" name="token" value="<?php echo Token::factory()->generate() ?>">
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" class="form-control <?php echo $validation->hasError('name') ? 'is-invalid' : '' ?>" id="name" name="name" placeholder="Enter your full name">
